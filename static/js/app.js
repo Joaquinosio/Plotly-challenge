@@ -1,23 +1,46 @@
-var url = "/samples.json";
+var url = "../samples.json";
 
-// Fetch the JSON data and console log it
-function buildPlot() {
-d3.json(url).then(function(data) {
+// Fetch the JSON data 
+function Starterpack() {
+  d3.json(url).then(function(data) {
+    var Dropdown = d3.select("#selDataset")
+    var Samplenames = data.names
+    Samplenames.forEach((SampleId)=>{
+      Dropdown.append("option").text(SampleId).property("value", SampleId)
+    });
    
-    // Grab values from the data json object to build the plots
-    var values = data.dataset.sample_values;
-    var id = data.dataset.otu_ids;
-    var labels  = data.dataset.otu_labels;
+    var FirstSample = Samplenames[0];
+    BuildPlots(FirstSample);
+    // BuildMetadata(FirstSample);
+  
+  });
+} 
+
+// Plotly.newPlot('myDiv', data, layout);
+Starterpack();
+function BuildPlots(Sample){
+  d3.json(url).then(function(data){ 
+  // Grab values from the data json object to build the plots
+    var samples = data.samples;
+    var Sampledata = samples.filter(individualsample => individualsample.id == Sample);
+    var FirstSampledata = Sampledata[0];
+    var id = FirstSampledata.otu_ids;
+    var labels  = FirstSampledata.otu_labels;
+    var values = FirstSampledata.sample_values;
+    var ylabels = id.slice(0,10).map(OTU => `OTU ${OTU}`).reverse();
 
     // Horizantal Bar chart
     var trace1 = [{
         type: "bar",
-        x: values,
-        y: id,
+        x: values.slice(0, 10).reverse(),
+        y: ylabels,
+        text: labels.slice(0,10).reverse(),
         orientation: "h"
     }];
     
-    // Bublle chart
+    Plotly.newPlot("bar", trace1)
+
+    // // Bublle chart
     var trace2 = {
         x: id,
         y: values,
@@ -28,21 +51,21 @@ d3.json(url).then(function(data) {
             size: values
         }
       };
-      
-      var data = [trace2];
-      
+
+      var datatrace2 = [trace2];
+
       var layout = {
         title: 'Samples Bubble chart',
         showlegend: false,
         height: 600,
-        width: 600
+        width: 1400,
       };
+
+      Plotly.newPlot("bubble", datatrace2, layout);
 
       // Display the sample metadata
       // Display each key-value pair from the metadata JSON
       // Update all of the plots any time that a new sample is selected.
-
-  });
-} 
-
-Plotly.newPlot('myDiv', data, layout);
+});
+}
+BuildPlot();
