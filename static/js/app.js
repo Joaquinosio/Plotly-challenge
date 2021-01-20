@@ -11,6 +11,7 @@ function Starterpack() {
    
     var FirstSample = Samplenames[0];
     BuildPlots(FirstSample);
+    buildTable(FirstSample);
     // BuildMetadata(FirstSample);  
   });
 } 
@@ -93,6 +94,19 @@ function BuildPlots(Sample){
 
 function optionChanged (Sample){
   BuildPlots(Sample)
-  // Meter el create table
+  buildTable(Sample)
+}
+
+function buildTable(Sample) {
+  d3.json(url).then(function(data) {
+    var Metadata = data.metadata
+    var SampleMeta = Metadata.filter(d=>d.id == Sample)
+    var table = d3.select("#sample-metadata");
+    table.html("")
+    console.log(SampleMeta)
+    Object.entries(SampleMeta[0]).forEach(([key, value])=>{
+      table.append("p").text(`${key}, ${value}`)
+    });
+  })
 }
 Starterpack();
