@@ -11,13 +11,12 @@ function Starterpack() {
    
     var FirstSample = Samplenames[0];
     BuildPlots(FirstSample);
-    // BuildMetadata(FirstSample);
-  
+    // BuildMetadata(FirstSample);  
   });
 } 
 
 // Plotly.newPlot('myDiv', data, layout);
-Starterpack();
+
 function BuildPlots(Sample){
   d3.json(url).then(function(data){ 
   // Grab values from the data json object to build the plots
@@ -62,10 +61,38 @@ function BuildPlots(Sample){
       };
 
       Plotly.newPlot("bubble", datatrace2, layout);
+    });
+  }
+           // Display each key-value pair from the metadata JSON
+      function tablecreation(data) {
+        var tbody = d3.select("tbody");
+        tbody.html("")
+      data.forEach(function(Metadata) {
+         var row = tbody.append("tr");
+         Object.entries(Metadata).forEach(function([key, value]) {
+      
+      //     // Append a cell to the row for each value
+      //     // in the weather report object
+           var cell = row.append("td");
+           cell.text(value);
+         });
+       });
+      };
 
-      // Display the sample metadata
-      // Display each key-value pair from the metadata JSON
       // Update all of the plots any time that a new sample is selected.
-});
+      
+      d3.selectAll("#selDataset").on("gauge", updatePlotly);
+
+      // This function is called when a dropdown menu item is selected
+      function updatePlotly() {
+      // Use D3 to select the dropdown menu
+      var dropdownMenu = d3.select("#selDataset");
+      // Assign the value of the dropdown menu option to a variable
+      var dataset = dropdownMenu.property("samples");
+      }
+
+function optionChanged (Sample){
+  BuildPlots(Sample)
+  // Meter el create table
 }
-BuildPlot();
+Starterpack();
