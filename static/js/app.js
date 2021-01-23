@@ -1,4 +1,4 @@
-var url = "../samples.json";
+var url = "static/data/samples.json";
 
 // Fetch the JSON data 
 function Starterpack() {
